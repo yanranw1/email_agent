@@ -8,7 +8,6 @@
         "text": "Show me my unread emails."
       }
     ],
-    "NL_text": "User: Show me my unread emails.",
     "ACP": [
       {
         "acp_id": "acp_1",
@@ -48,7 +47,6 @@
         "text": "Search for emails from my manager manager@sdf.com about the budget report."
       }
     ],
-    "NL_text": "User: Search for emails from my manager manager@sdf.com about the budget report.",
     "ACP": [
       {
         "acp_id": "acp_1",
@@ -88,7 +86,6 @@
         "text": "Handle the email from my advisor."
       }
     ],
-    "NL_text": "User: Handle the email from my advisor.",
     "ACP": [
       {
         "acp_id": "acp_1",
@@ -125,7 +122,6 @@
         "text": "Find the email from my advisor."
       }
     ],
-    "NL_text": "User: Find the email from my advisor.",
     "ACP": [
       {
         "acp_id": "acp_1",
@@ -164,7 +160,6 @@
         "text": "Search for emails about the budget, analyze the latest one, and tell me if I need to act."
       }
     ],
-    "NL_text": "User: Search for emails about the budget, analyze the latest one, and tell me if I need to act.",
     "ACP": [
       {
         "acp_id": "acp_1",
