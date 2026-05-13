@@ -303,4 +303,21 @@ TOOLS = [
             },
         },
     },
+    {
+        "type": "function",
+        "function": {
+            "name": "send_draft",
+            "description": "Send an existing Gmail draft by its draft ID. Use after draft_email to actually send it.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "draft_id": {
+                        "type": "string",
+                        "description": "The Gmail draft ID returned by draft_email",
+                    },
+                },
+                "required": ["draft_id"],
+            },
+        },
+    },
 ]

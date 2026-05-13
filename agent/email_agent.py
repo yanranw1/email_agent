@@ -216,6 +216,18 @@ class EmailAgent:
             )
             self._pending_draft = None
             return result
+        elif name == "send_draft":
+            try:
+                draft_id = args.get("draft_id")
+                if not draft_id:
+                    return {"error": "No draft_id provided. Call list_drafts first to get a draft_id."}
+                result = self.gmail.service.users().drafts().send(
+                    userId="me",
+                    body={"id": draft_id}
+                ).execute()
+                return {"success": True, "message_id": result.get("id"), "thread_id": result.get("threadId")}
+            except Exception as e:
+                return {"error": str(e)}
 
         elif name == "summarize_inbox":
             focus = args.get("focus", "")
@@ -275,7 +287,7 @@ class EmailAgent:
                 subject=f"Fwd: {original['subject']}",
                 body=fwd_body,
             )
-            
+
             return {"success": True, "sent_to": args["to"], "subject": f"Fwd: {original['subject']}", **result}
 
         elif name == "delete_email":

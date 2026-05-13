@@ -11,7 +11,7 @@ AVAILABLE_TOOLS = [
     "list_emails", "get_email", "search_emails", "analyze_email",
     "draft_reply", "send_email", "summarize_inbox", "create_task",
     "list_tasks", "complete_task", "forward_email", "delete_email",
-    "draft_email", "star_email",
+    "draft_email", "send_draft", "star_email",
 ]
 
 def prompt_args(tool_name: str) -> dict:
@@ -70,6 +70,9 @@ def prompt_args(tool_name: str) -> dict:
 
     elif tool_name == "complete_task":
         args["task_id"] = input("  task_id: ").strip()
+    
+    elif tool_name == "send_draft":
+        args["draft_id"] = input("  draft_id: ").strip()
 
     return args
 
