@@ -252,10 +252,14 @@ class EmailAgent:
             return {"success": success, "task_id": args["task_id"]}
         
         elif name == "forward_email":
-            original = self.gmail.get_email(args["email_id"])
+            email_id = args.get("email_id")
+            if not email_id:
+                return {"error": "No email_id provided. Call list_emails first to find the email ID."}
+
+            original = self.gmail.get_email(email_id)
             if not original:
-                return {"error": "Email not found"}
-            
+                return {"error": f"Email {email_id} not found. Call list_emails to get valid IDs."}
+
             fwd_body = (
                 f"{args.get('message', '')}\n\n"
                 f"---------- Forwarded message ----------\n"
@@ -265,17 +269,14 @@ class EmailAgent:
                 f"To: {original['to']}\n\n"
                 f"{original['body']}"
             )
-            self._pending_draft = {
-                "to": args["to"],
-                "subject": f"Fwd: {original['subject']}",
-                "body": fwd_body,
-            }
-            return {
-                "draft": fwd_body,
-                "to": args["to"],
-                "subject": f"Fwd: {original['subject']}",
-                "note": "Forward draft ready. Show user and ask for approval before sending.",
-            }
+
+            result = self.gmail.send_email(
+                to=args["to"],
+                subject=f"Fwd: {original['subject']}",
+                body=fwd_body,
+            )
+            
+            return {"success": True, "sent_to": args["to"], "subject": f"Fwd: {original['subject']}", **result}
 
         elif name == "delete_email":
             try:
