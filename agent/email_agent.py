@@ -250,6 +250,77 @@ class EmailAgent:
         elif name == "complete_task":
             success = self.tasks.complete_task(args["task_id"])
             return {"success": success, "task_id": args["task_id"]}
+        
+        elif name == "forward_email":
+            original = self.gmail.get_email(args["email_id"])
+            if not original:
+                return {"error": "Email not found"}
+            
+            fwd_body = (
+                f"{args.get('message', '')}\n\n"
+                f"---------- Forwarded message ----------\n"
+                f"From: {original['from']}\n"
+                f"Date: {original['date']}\n"
+                f"Subject: {original['subject']}\n"
+                f"To: {original['to']}\n\n"
+                f"{original['body']}"
+            )
+            self._pending_draft = {
+                "to": args["to"],
+                "subject": f"Fwd: {original['subject']}",
+                "body": fwd_body,
+            }
+            return {
+                "draft": fwd_body,
+                "to": args["to"],
+                "subject": f"Fwd: {original['subject']}",
+                "note": "Forward draft ready. Show user and ask for approval before sending.",
+            }
+
+        elif name == "delete_email":
+            try:
+                self.gmail.service.users().messages().trash(
+                    userId="me", id=args["email_id"]
+                ).execute()
+                return {"success": True, "email_id": args["email_id"], "action": "moved to trash"}
+            except Exception as e:
+                return {"error": str(e)}
+
+        elif name == "draft_email":
+            try:
+                import base64
+                from email.mime.text import MIMEText
+                message = MIMEText(args["body"])
+                message["to"] = args.get("to", "")
+                message["subject"] = args.get("subject", "")
+                raw = base64.urlsafe_b64encode(message.as_bytes()).decode()
+                draft = self.gmail.service.users().drafts().create(
+                    userId="me",
+                    body={"message": {"raw": raw}}
+                ).execute()
+                return {
+                    "success": True,
+                    "draft_id": draft["id"],
+                    "to": args.get("to", ""),
+                    "subject": args.get("subject", ""),
+                }
+            except Exception as e:
+                return {"error": str(e)}
+
+        elif name == "star_email":
+            try:
+                label_action = (
+                    {"addLabelIds": ["STARRED"]}
+                    if args.get("star", True)
+                    else {"removeLabelIds": ["STARRED"]}
+                )
+                self.gmail.service.users().messages().modify(
+                    userId="me", id=args["email_id"], body=label_action
+                ).execute()
+                action = "starred" if args.get("star", True) else "unstarred"
+                return {"success": True, "email_id": args["email_id"], "action": action}
+            except Exception as e:
+                return {"error": str(e)}
 
         else:
             return {"error": f"Unknown tool: {name}"}

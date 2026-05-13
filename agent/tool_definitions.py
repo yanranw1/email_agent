@@ -242,4 +242,65 @@ TOOLS = [
             },
         },
     },
+    {
+        "type": "function",
+        "function": {
+            "name": "forward_email",
+            "description": "Forward an email to another recipient. IMPORTANT: You must have a valid email_id before calling this. If the user says 'this email' or 'that email' without specifying an ID, call list_emails first to get the ID of the most recent relevant email.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "email_id": {"type": "string", "description": "The Gmail message ID to forward"},
+                    "to": {"type": "string", "description": "Recipient email address"},
+                    "message": {"type": "string", "description": "Optional message to prepend", "default": ""},
+                },
+                "required": ["email_id", "to"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "delete_email",
+            "description": "Move an email to trash.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "email_id": {"type": "string", "description": "The Gmail message ID to trash"},
+                },
+                "required": ["email_id"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "draft_email",
+            "description": "Use this whenever the user asks to draft, compose, or write a NEW email to someone. Saves it to Gmail drafts.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "to": {"type": "string", "description": "Recipient email address"},
+                    "subject": {"type": "string", "description": "Email subject"},
+                    "body": {"type": "string", "description": "Email body"},
+                },
+                "required": ["subject", "body"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "star_email",
+            "description": "Star or unstar an email.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "email_id": {"type": "string", "description": "The Gmail message ID"},
+                    "star": {"type": "boolean", "description": "True to star, False to unstar", "default": True},
+                },
+                "required": ["email_id"],
+            },
+        },
+    },
 ]
